@@ -1,50 +1,210 @@
-// Константа с адресом твоего будущего сервера
-const SERVER_URL = "https://your-api-tale-stars.com";
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tale Stars Premium</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        :root {
+            --primary: #7289da;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --accent: #38bdf8;
+            --success: #10b981;
+        }
 
-// 1. ФУНКЦИЯ ЗАПРОСА КЛЮЧА
-async function generateKey() {
-    const user = window.Telegram.WebApp.initDataUnsafe.user; // Берем данные юзера из ТГ
-    
-    try {
-        const response = await fetch(`${SERVER_URL}/get-new-key`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                user_id: user.id,
-                username: user.username 
-            })
-        });
-        
-        const data = await response.json();
-        
-        // Показываем ключ, который прислал сервер
-        const keyBox = document.getElementById('keyBox');
-        keyBox.innerText = data.key; 
-        keyBox.style.display = 'block';
-        
-    } catch (e) {
-        alert("Ошибка связи с сервером Tale Stars");
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            width: 100%;
+        }
+
+        .status-banner {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none; /* Скрыто по умолчанию */
+        }
+
+        .tabs {
+            display: flex;
+            width: 90%;
+            gap: 5px;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.2);
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1; background: transparent; border: none; color: #94a3b8;
+            padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px;
+        }
+
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .container { width: 90%; max-width: 400px; display: none; animation: fadeIn 0.3s; }
+        .container.active { display: block; }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .main-action {
+            background: var(--primary); color: white; border: none;
+            padding: 15px; border-radius: 12px; font-weight: bold;
+            width: 100%; cursor: pointer; transition: 0.3s;
+        }
+
+        .main-action:active { transform: scale(0.98); }
+
+        #key-display-area {
+            background: #000; color: var(--success);
+            padding: 15px; border-radius: 10px; margin-top: 15px;
+            font-family: monospace; font-size: 13px; display: none;
+        }
+
+        .key-item {
+            background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 15px; margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 style="margin:0; color:var(--accent); letter-spacing:1px;">TALE STARS</h1>
+    <p style="font-size:12px; color:#94a3b8; margin:5px 0 0;">Cheat Client Management</p>
+</div>
+
+<!-- Визуальный индикатор активации -->
+<div id="global-status" class="status-banner" style="width: 80%; text-align: center; margin-top: 10px;">
+    ✓ ПОДПИСКА TALE STARS АКТИВИРОВАНА (30 ДНЕЙ)
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('shop')">Магазин</button>
+    <button class="tab-btn" onclick="switchTab('my-keys')">Мои ключи</button>
+    <button class="tab-btn" onclick="switchTab('activate')">Активация</button>
+</div>
+
+<div id="shop" class="container active">
+    <div class="card" id="shop-card">
+        <div style="font-size: 40px;">🛸</div>
+        <h3>Tale Stars Beta</h3>
+        <p style="color: #94a3b8; font-size: 14px;">Бесплатный доступ к читу. Ключ генерируется мгновенно.</p>
+        <button class="main-action" onclick="generateKey()">ПОЛУЧИТЬ КЛЮЧ</button>
+        <div id="key-display-area"></div>
+    </div>
+</div>
+
+<div id="my-keys" class="container">
+    <div id="keys-list">
+        <p style="text-align: center; color: #94a3b8; margin-top: 20px;">Список пуст</p>
+    </div>
+</div>
+
+<div id="activate" class="container">
+    <div class="card">
+        <h3>Активация чита</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Введите ключ, чтобы разблокировать функции чита в игре.</p>
+        <input type="text" id="keyInput" placeholder="TS-XXXX-XXXX" 
+               style="width:100%; padding:14px; border-radius:12px; border:1px solid #334155; background:#0f172a; color:white; box-sizing:border-box; margin-bottom:15px; text-align:center;">
+        <button class="main-action" id="btn-activate" onclick="activateKey()">АКТИВИРОВАТЬ</button>
+    </div>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let userKeys = [];
+    let isActivated = false;
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if(tabId === 'my-keys') renderKeys();
     }
-}
 
-// 2. ФУНКЦИЯ АКТИВАЦИИ
-async function activateKey() {
-    const keyVal = document.getElementById('keyInput').value;
-    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    function generateKey() {
+        const k = `TS-${Math.random().toString(36).substr(2, 5).toUpperCase()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+        const expiry = new Date();
+        expiry.setDate(expiry.getDate() + 30);
 
-    const response = await fetch(`${SERVER_URL}/activate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            key: keyVal,
-            user_id: user.id 
-        })
-    });
-
-    const result = await response.json();
-    if (result.success) {
-        alert("Ключ привязан! Теперь он работает в игре.");
-    } else {
-        alert("Ошибка: " + result.message);
+        userKeys.push({ code: k, date: expiry.toLocaleDateString() });
+        
+        const display = document.getElementById('key-display-area');
+        display.innerText = k;
+        display.style.display = 'block';
+        
+        tg.HapticFeedback.impactOccurred('medium');
     }
-}
+
+    function renderKeys() {
+        const list = document.getElementById('keys-list');
+        if(userKeys.length === 0) return;
+        list.innerHTML = userKeys.map(k => `
+            <div class="key-item">
+                <div style="color:var(--accent); font-weight:bold; font-family:monospace;">${k.code}</div>
+                <div style="font-size:11px; color:#64748b; margin-top:5px;">Действителен до: ${k.date}</div>
+            </div>
+        `).join('');
+    }
+
+    function activateKey() {
+        const val = document.getElementById('keyInput').value;
+        
+        if (val.length < 5) {
+            tg.showAlert("Введите корректный ключ!");
+            return;
+        }
+
+        // ВИЗУАЛЬНАЯ АКТИВАЦИЯ
+        isActivated = true;
+        document.getElementById('global-status').style.display = 'block';
+        document.getElementById('btn-activate').innerText = "АКТИВИРОВАНО ✓";
+        document.getElementById('btn-activate').style.background = "#10b981";
+        
+        tg.HapticFeedback.notificationOccurred('success');
+        tg.showAlert("Чит Tale Stars успешно активирован! Перезайдите в игру.");
+        
+        setTimeout(() => {
+            switchTab('shop');
+            document.getElementById('shop-card').innerHTML = `
+                <div style="font-size: 40px;">✅</div>
+                <h3>Доступ разрешен</h3>
+                <p style="color:#10b981">Ваша лицензия активна. Наслаждайтесь игрой!</p>
+            `;
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>

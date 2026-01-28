@@ -1,131 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tale Stars</title>
-    <script src="https://telegram.org"></script>
-    <style>
-        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; text-align: center; }
-        .header { background: #1e293b; padding: 20px; border-bottom: 2px solid #7289da; }
-        .tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .tab-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 15px; border-radius: 10px; cursor: pointer; }
-        .tab-btn.active { background: #7289da; color: white; border-color: #7289da; }
-        .container { display: none; padding: 0 20px; }
-        .container.active { display: block; }
-        .card { background: #1e293b; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn { background: #7289da; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; font-size: 16px; margin-top: 10px; }
-        #key-display { margin-top: 20px; padding: 15px; background: #000; color: #10b981; border-radius: 10px; font-family: monospace; display: none; border: 1px dashed #10b981; cursor: pointer; word-break: break-all; }
-        .support-link { display: inline-block; margin-top: 30px; color: #38bdf8; text-decoration: none; font-weight: bold; border: 1px solid #38bdf8; padding: 10px 20px; border-radius: 50px; }
-    </style>
+<meta charset="UTF-8">
+<title>Tale Stars</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f1a;
+    color: #fff;
+}
+
+header {
+    background: linear-gradient(135deg, #7b2cff, #2ce6ff);
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    background: #12182a;
+}
+
+nav button {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 14px;
+}
+
+nav button.active {
+    color: #2ce6ff;
+    border-bottom: 2px solid #2ce6ff;
+}
+
+section {
+    display: none;
+    padding: 20px;
+}
+
+section.active {
+    display: block;
+}
+
+.card {
+    background: #161d33;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.btn {
+    background: linear-gradient(135deg, #7b2cff, #2ce6ff);
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+.key {
+    font-family: monospace;
+    font-size: 13px;
+    color: #2ce6ff;
+    word-break: break-all;
+}
+
+.active-cheat {
+    color: #00ff9d;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="header">
-    <h2 style="margin:0; letter-spacing: 2px;">TALE STARS</h2>
-</div>
+<header>✨ TALE STARS ✨</header>
 
-<div class="tabs">
-    <button class="tab-btn active" id="b1" onclick="openTab('shop-page', 'b1')">Магазин</button>
-    <button class="tab-btn" id="b2" onclick="openTab('act-page', 'b2')">Активация</button>
-</div>
+<nav>
+    <button class="active" onclick="openTab('shop')">Магазин</button>
+    <button onclick="openTab('activate')">Активация</button>
+    <button onclick="openTab('keys')">Ваши ключи</button>
+</nav>
 
-<!-- СТРАНИЦА МАГАЗИНА -->
-<div id="shop-page" class="container active">
-    <div class="card" id="main-content">
-        <h3>Получить Crack</h3>
-        <p style="color:#94a3b8; font-size: 14px;">Ключ генерируется на 30 дней бесплатно.</p>
-        <button class="btn" onclick="generateKeyNow()">ПОЛУЧИТЬ КЛЮЧ</button>
-        <div id="key-display"></div>
-        <p id="hint" style="display:none; color:#10b981; font-size:11px; margin-top:5px;">Нажми на ключ выше, чтобы скопировать</p>
-    </div>
-</div>
-
-<!-- СТРАНИЦА АКТИВАЦИИ -->
-<div id="act-page" class="container">
+<section id="shop" class="active">
     <div class="card">
-        <h3>Активация ключа</h3>
-        <input type="text" id="user-input" placeholder="Вставь ключ сюда...">
-        <button class="btn" onclick="checkKeyNow()">АКТИВИРОВАТЬ</button>
+        <h3>🎁 Бесплатный ключ</h3>
+        <p>1 ключ на 30 дней</p>
+        <button class="btn" onclick="generateKey()">Получить бесплатно</button>
     </div>
-</div>
+</section>
 
-<a href="https://t.me" target="_blank" class="support-link">💬 Поддержка: @ddrrww133</a>
+<section id="activate">
+    <div class="card">
+        <h3>🔑 Активация ключа</h3>
+        <input id="keyInput" placeholder="Введите ключ">
+        <button class="btn" onclick="activateKey()">Активировать</button>
+        <div id="status"></div>
+    </div>
+</section>
+
+<section id="keys">
+    <div class="card">
+        <h3>📦 Ваши ключи</h3>
+        <div id="keyList"></div>
+    </div>
+</section>
 
 <script>
-    // Инициализация Telegram
-    var tg = window.Telegram.WebApp;
-    tg.expand();
+Telegram.WebApp.ready();
 
-    // Массив для хранения только созданных ключей
-    var validKeys = [];
+function openTab(tab) {
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+    event.target.classList.add("active");
+}
 
-    function openTab(pageId, btnId) {
-        // Скрываем все страницы
-        document.getElementById('shop-page').classList.remove('active');
-        document.getElementById('act-page').classList.remove('active');
-        // Снимаем активность с кнопок
-        document.getElementById('b1').classList.remove('active');
-        document.getElementById('b2').classList.remove('active');
-        
-        // Показываем нужную
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById(btnId).classList.add('active');
+function randomKey() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let key = "TS-";
+    for (let i = 0; i < 32; i++) {
+        key += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return key;
+}
+
+function generateKey() {
+    const key = randomKey();
+    const expires = Date.now() + 30 * 24 * 60 * 60 * 1000;
+
+    let keys = JSON.parse(localStorage.getItem("keys") || "[]");
+    keys.push({ key, expires, activated: false });
+    localStorage.setItem("keys", JSON.stringify(keys));
+
+    alert("Ваш ключ:\n" + key);
+    renderKeys();
+}
+
+function activateKey() {
+    const input = document.getElementById("keyInput").value.trim();
+    let keys = JSON.parse(localStorage.getItem("keys") || "[]");
+
+    const k = keys.find(k => k.key === input);
+
+    if (!k) {
+        status.innerHTML = "❌ Ключ не найден";
+        return;
     }
 
-    function generateKeyNow() {
-        // Создаем сложный ключ
-        var p1 = Math.random().toString(36).substr(2, 6).toUpperCase();
-        var p2 = Math.random().toString(36).substr(2, 6).toUpperCase();
-        var p3 = Math.random().toString(36).substr(2, 6).toUpperCase();
-        var finalKey = "TS-" + p1 + "-" + p2 + "-" + p3;
-
-        // Сохраняем его в список разрешенных
-        validKeys.push(finalKey);
-
-        // Показываем на экране
-        var box = document.getElementById('key-display');
-        box.innerText = finalKey;
-        box.style.display = 'block';
-        document.getElementById('hint').style.display = 'block';
-
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy');
+    if (Date.now() > k.expires) {
+        status.innerHTML = "⌛ Срок ключа истёк";
+        return;
     }
 
-    // Копирование при клике на ключ
-    document.getElementById('key-display').onclick = function() {
-        var text = this.innerText;
-        var input = document.createElement('input');
-        input.setAttribute('value', text);
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        tg.showAlert("Ключ скопирован!");
-    };
+    k.activated = true;
+    localStorage.setItem("keys", JSON.stringify(keys));
 
-    function checkKeyNow() {
-        var entered = document.getElementById('user-input').value.trim();
+    status.innerHTML = "<div class='active-cheat'>✅ ЧИТ АКТИВИРОВАН</div>";
+    renderKeys();
+}
 
-        // ПРОВЕРКА: есть ли этот ключ в списке созданных
-        if (validKeys.indexOf(entered) !== -1) {
-            tg.showAlert("✅ Успешно! Чит Tale Stars активирован.");
-            
-            // Визуально меняем магазин
-            document.getElementById('main-content').innerHTML = `
-                <div style="font-size:50px;">⭐</div>
-                <h3 style="color:#10b981">ЛИЦЕНЗИЯ АКТИВНА</h3>
-                <p>Ваш ключ: <b>`+entered+`</b></p>
-                <p>Доступ открыт на 30 дней.</p>
-            `;
-            openTab('shop-page', 'b1');
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        } else {
-            tg.showAlert("❌ Ошибка: Этот ключ не был сгенерирован в нашем магазине!");
-            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-        }
+function renderKeys() {
+    const list = document.getElementById("keyList");
+    let keys = JSON.parse(localStorage.getItem("keys") || "[]");
+
+    if (!keys.length) {
+        list.innerHTML = "Ключей нет";
+        return;
     }
+
+    list.innerHTML = keys.map(k => `
+        <div class="card">
+            <div class="key">${k.key}</div>
+            <div>⏳ До: ${new Date(k.expires).toLocaleDateString()}</div>
+            <div>${k.activated ? "✅ Активирован" : "❌ Не активирован"}</div>
+        </div>
+    `).join("");
+}
+
+renderKeys();
 </script>
 
 </body>

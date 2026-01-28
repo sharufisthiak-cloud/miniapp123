@@ -3,179 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tale Stars</title>
+    <title>Tale Stars App</title>
     <script src="https://telegram.org"></script>
     <style>
         :root {
-            --primary: #7289da;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --accent: #38bdf8;
-            --success: #10b981;
+            --primary: #7289da; --bg: #0f172a; --card: #1e293b;
+            --text: #f8fafc; --accent: #38bdf8; --success: #10b981;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
+            font-family: sans-serif; background: var(--bg); color: var(--text);
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
         }
-
-        .header {
-            text-align: center;
-            padding: 20px;
-            background: #1e293b;
-            width: 100%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .status-banner {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin: 15px auto;
-            width: 85%;
-            display: none;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .tabs {
-            display: flex;
-            width: 90%;
-            background: rgba(0,0,0,0.2);
-            padding: 4px;
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #94a3b8;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .container {
-            display: none;
-            width: 90%;
-            max-width: 400px;
-        }
-
+        .header { text-align: center; padding: 20px; background: #1e293b; width: 100%; border-bottom: 2px solid var(--primary); }
+        .tabs { display: flex; width: 90%; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px; margin: 15px 0; }
+        .tab-btn { flex: 1; background: none; border: none; color: #94a3b8; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .container { display: none; width: 90%; max-width: 400px; text-align: center; }
         .container.active { display: block; }
-
-        .card {
-            background: var(--card);
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .main-action {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 20px;
-            font-size: 15px;
-        }
-
-        .key-display {
-            background: #000;
-            color: var(--success);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-family: monospace;
-            word-break: break-all;
-            display: none;
-            border: 1px dashed var(--success);
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            box-sizing: border-box;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .key-item {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--accent);
-        }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .main-action { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 20px; font-size: 15px; cursor: pointer; }
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; text-align: center; margin-bottom: 10px; }
+        .key-box { background: #000; color: var(--success); padding: 15px; border-radius: 10px; margin-top: 15px; font-family: monospace; cursor: pointer; border: 1px dashed var(--success); word-wrap: break-word; }
+        .key-item { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: left; border-left: 4px solid var(--accent); }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1 style="margin:0; font-size: 20px; letter-spacing: 2px;">TALE STARS</h1>
-</div>
-
-<div id="global-status" class="status-banner">
-    ✓ СИСТЕМА АКТИВИРОВАНА
-</div>
+<div class="header"><h1>TALE STARS</h1></div>
 
 <div class="tabs">
-    <button id="btn-shop" class="tab-btn active" onclick="switchTab('shop')">Магазин</button>
-    <button id="btn-keys" class="tab-btn" onclick="switchTab('my-keys')">Ключи</button>
-    <button id="btn-act" class="tab-btn" onclick="switchTab('activate')">Ввод</button>
+    <button class="tab-btn active" id="tab-shop-btn">Магазин</button>
+    <button class="tab-btn" id="tab-keys-btn">Мои ключи</button>
+    <button class="tab-btn" id="tab-act-btn">Активация</button>
 </div>
 
-<!-- SHOP -->
 <div id="shop" class="container active">
-    <div class="card" id="main-card">
-        <div style="font-size: 40px; margin-bottom: 10px;">💫</div>
-        <h3>Tale Stars Free</h3>
-        <p style="color: #94a3b8; font-size: 14px;">Нажми на кнопку ниже, чтобы сгенерировать сложный ключ на 30 дней.</p>
-        <button class="main-action" onclick="generateKey()">ПОЛУЧИТЬ КЛЮЧ</button>
-        <div id="key-result" class="key-display"></div>
+    <div class="card" id="shop-content">
+        <h3>Получить лицензию</h3>
+        <p style="font-size: 14px; color: #94a3b8;">Нажми, чтобы создать уникальный ключ Tale Stars (30 дней).</p>
+        <button class="main-action" id="gen-key-btn">ГЕНЕРИРОВАТЬ</button>
+        <div id="key-res" class="key-box" style="display:none;"></div>
+        <p id="copy-hint" style="display:none; font-size:10px; color:var(--success); margin-top:5px;">Нажми на ключ, чтобы скопировать</p>
     </div>
 </div>
 
-<!-- MY KEYS -->
 <div id="my-keys" class="container">
-    <div id="keys-list">
-        <p style="text-align: center; color: #94a3b8;">У вас пока нет ключей</p>
+    <div id="keys-list" style="margin-top:10px;">
+        <p style="color:#94a3b8;">Ключей еще нет</p>
     </div>
 </div>
 
-<!-- ACTIVATE -->
 <div id="activate" class="container">
     <div class="card">
-        <h3>Активация</h3>
-        <input type="text" id="keyInput" placeholder="Вставьте ваш ключ">
-        <button id="confirm-btn" class="main-action" onclick="activateKey()">АКТИВИРОВАТЬ</button>
+        <h3>Ввод ключа</h3>
+        <input type="text" id="key-input" placeholder="TS-XXXX-XXXX">
+        <button class="main-action" id="activate-btn">АКТИВИРОВАТЬ</button>
     </div>
 </div>
 
@@ -184,81 +66,80 @@
     tg.ready();
     tg.expand();
 
-    let userKeys = [];
+    // Хранилище сгенерированных ключей в памяти
+    let generatedKeysList = [];
 
-    function switchTab(tabId) {
-        // Скрываем все контейнеры
+    // ГЕНЕРАЦИЯ КЛЮЧА
+    document.getElementById('gen-key-btn').addEventListener('click', () => {
+        const key = "TS-" + Math.random().toString(36).substring(2, 7).toUpperCase() + "-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        
+        generatedKeysList.push(key); // Сохраняем в список разрешенных
+        
+        const resBox = document.getElementById('key-res');
+        resBox.innerText = key;
+        resBox.style.display = 'block';
+        document.getElementById('copy-hint').style.display = 'block';
+        
+        tg.HapticFeedback.impactOccurred('medium');
+    });
+
+    // КОПИРОВАНИЕ КЛЮЧА
+    document.getElementById('key-res').addEventListener('click', function() {
+        const text = this.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            tg.showAlert("Ключ скопирован в буфер обмена!");
+        });
+    });
+
+    // АКТИВАЦИЯ КЛЮЧА
+    document.getElementById('activate-btn').addEventListener('click', () => {
+        const input = document.getElementById('key-input').value.trim();
+        
+        if (generatedKeysList.includes(input)) {
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert("✅ Успешно! Чит Tale Stars активирован на 30 дней.");
+            
+            document.getElementById('shop-content').innerHTML = `
+                <div style="font-size:40px;">👑</div>
+                <h3 style="color:var(--success)">ПОДПИСКА АКТИВНА</h3>
+                <p>Ваша лицензия подтверждена. Чит готов к работе.</p>
+            `;
+            showTab('shop');
+        } else {
+            tg.HapticFeedback.notificationOccurred('error');
+            tg.showAlert("❌ Ошибка: Данный ключ не существует или уже использован.");
+        }
+    });
+
+    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+    function showTab(id) {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-        // Убираем активный класс у кнопок
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        // Показываем нужный
-        document.getElementById(tabId).classList.add('active');
-        // Подсвечиваем кнопку (ищем по ID)
-        if(tabId === 'shop') document.getElementById('btn-shop').classList.add('active');
-        if(tabId === 'my-keys') {
-            document.getElementById('btn-keys').classList.add('active');
-            renderKeys();
+        document.getElementById(id).classList.add('active');
+        if(id === 'shop') document.getElementById('tab-shop-btn').classList.add('active');
+        if(id === 'my-keys') {
+            document.getElementById('tab-keys-btn').classList.add('active');
+            updateKeysList();
         }
-        if(tabId === 'activate') document.getElementById('btn-act').classList.add('active');
+        if(id === 'activate') document.getElementById('tab-act-btn').classList.add('active');
     }
 
-    function generateKey() {
-        const part1 = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const part2 = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const part3 = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const fullKey = `TS-${part1}-${part2}-${part3}`;
-
-        userKeys.push({
-            code: fullKey,
-            date: new Date().toLocaleDateString()
-        });
-
-        const res = document.getElementById('key-result');
-        res.innerText = fullKey;
-        res.style.display = 'block';
-
-        tg.HapticFeedback.impactOccurred('heavy');
-    }
-
-    function renderKeys() {
+    function updateKeysList() {
         const list = document.getElementById('keys-list');
-        if(userKeys.length === 0) return;
-
-        list.innerHTML = userKeys.map(k => `
+        if(generatedKeysList.length === 0) return;
+        list.innerHTML = generatedKeysList.map(k => `
             <div class="key-item">
-                <div style="font-weight:bold; color:var(--accent);">${k.code}</div>
-                <div style="font-size:11px; color:#64748b; margin-top:5px;">Создан: ${k.date} (на 30 дней)</div>
+                <div style="color:var(--accent); font-weight:bold;">${k}</div>
+                <div style="font-size:11px; color:#64748b; margin-top:4px;">Статус: Ожидает активации</div>
             </div>
         `).join('');
     }
 
-    function activateKey() {
-        const val = document.getElementById('keyInput').value;
-        if(val.length < 5) {
-            tg.showAlert("Сначала введите ключ!");
-            return;
-        }
+    document.getElementById('tab-shop-btn').addEventListener('click', () => showTab('shop'));
+    document.getElementById('tab-keys-btn').addEventListener('click', () => showTab('my-keys'));
+    document.getElementById('tab-act-btn').addEventListener('click', () => showTab('activate'));
 
-        // Визуальный эффект активации
-        document.getElementById('global-status').style.display = 'block';
-        const btn = document.getElementById('confirm-btn');
-        btn.innerText = "АКТИВИРОВАНО";
-        btn.style.background = "var(--success)";
-        
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.showAlert("Tale Stars успешно активирован! Приятной игры.");
-
-        // Смена главного экрана
-        setTimeout(() => {
-            document.getElementById('main-card').innerHTML = `
-                <div style="font-size: 50px;">🚀</div>
-                <h2 style="color:var(--success)">Доступ открыт</h2>
-                <p>Ваша подписка активна в системе Tale Stars.</p>
-            `;
-            switchTab('shop');
-        }, 1000);
-    }
 </script>
 </body>
 </html>
